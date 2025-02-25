@@ -1,6 +1,0 @@
-all:
-  include:
-    all:
-      - gnome-shell-extension-pop-shell
-      - pop-launcher
-      - pop-icon-theme
