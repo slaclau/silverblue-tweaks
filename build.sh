@@ -12,3 +12,4 @@ set -ouex pipefail
 # this installs and removes/replaces all required packages
 /ctx/packages.sh
 /ctx/customization.sh
+/ctx/initramfs.sh
