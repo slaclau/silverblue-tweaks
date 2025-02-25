@@ -5,6 +5,9 @@ ARG BASE_IMAGE="quay.io/${SOURCE_ORG}/${SOURCE_IMAGE}"
 
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-40}"
 
+FROM scratch AS ctx
+COPY / /
+
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
 
 ## Other possible base images include:
@@ -22,7 +25,6 @@ FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
 
 COPY build.sh /tmp/build.sh
 
-RUN mkdir -p /var/lib/alternatives && \
-    /tmp/build.sh && \
-    ostree container commit
+RUN --mount=type=bind,from=ctx,src=/,dst=/ctx \
+    /ctx/build.sh
     
