@@ -1,4 +1,11 @@
-FROM ghcr.io/ublue-os/silverblue-main:latest
+ARG IMAGE_NAME="${IMAGE_NAME:-silverblue}"
+ARG SOURCE_IMAGE="${SOURCE_IMAGE:-silverblue}"
+ARG SOURCE_ORG="${SOURCE_ORG:-fedora-ostree-desktops}"
+ARG BASE_IMAGE="quay.io/${SOURCE_ORG}/${SOURCE_IMAGE}"
+
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-40}"
+
+FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
 
 ## Other possible base images include:
 # FROM ghcr.io/ublue-os/bazzite:stable
