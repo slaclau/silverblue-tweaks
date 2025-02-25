@@ -10,6 +10,10 @@ COPY / /
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
 
+ARG IMAGE_NAME="${IMAGE_NAME:-silverblue}"
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-40}"
+ARG KERNEL_VERSION="${KERNEL_VERSION:-6.9.7-200.fc40.x86_64}"
+
 RUN --mount=type=bind,from=ctx,src=/,dst=/ctx \
     /ctx/build.sh
     
