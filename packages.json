@@ -5,6 +5,14 @@
         "gnome-shell-extension-pop-shell",
         "pop-launcher",
         "pop-icon-theme",
+        
+        "fedorainfinity-backgrounds",
+        "yaru-theme",
+        "terminus-fonts-console",
+        
+        "distrobox",
+        
+        "tailscale"
       ]
     }
   }
