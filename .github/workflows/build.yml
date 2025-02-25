@@ -91,8 +91,7 @@ jobs:
         run: |
           sudo podman build \
             --file Containerfile \
-            --tag chunky \
-            --image ${{ env.IMAGE_NAME }}
+            --tag ${{ env.IMAGE_NAME }}:chunky 
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
