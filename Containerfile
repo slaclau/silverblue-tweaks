@@ -11,7 +11,7 @@ COPY / /
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
 
 ARG IMAGE_NAME="${IMAGE_NAME:-silverblue}"
-ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-40}"
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-41}"
 
 RUN --mount=type=bind,from=ctx,src=/,dst=/ctx \
     /ctx/build.sh
