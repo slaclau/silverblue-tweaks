@@ -90,7 +90,7 @@ jobs:
         id: build_image
         run: |
           sudo podman build \
-            --file  Containerfile \
+            --file Containerfile \
             --tag chunky \
             --image ${{ env.IMAGE_NAME }}
 
