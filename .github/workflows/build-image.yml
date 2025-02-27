@@ -77,6 +77,7 @@ jobs:
         run: |
           sudo podman build \
             --file Containerfile \
+            --format docker
             --tag raw-img
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
