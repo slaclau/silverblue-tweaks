@@ -1,0 +1,42 @@
+name: Create Release
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      run-id:
+        description: "The Run-ID for the workflow."
+        type: number
+        required: true
+
+permissions:
+  contents: write
+env:
+  SET_X: 1
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Generate Changelog
+        run: |
+          ./changelog.py >> changelog.md
+          cat changelog.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Changelogs as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-changelog
+          path: ./changelog.md
+          if-no-files-found: error
+          retention-days: 0
+          compression-level: 0
+          overwrite: true
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: false

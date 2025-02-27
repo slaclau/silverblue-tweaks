@@ -21,3 +21,6 @@ jobs:
     name: Build and push images
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
+  create_release:
+    name: Create Release
+    uses: ./.github/workflows/create-release.yml
