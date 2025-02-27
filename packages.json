@@ -5,9 +5,10 @@
         "gnome-shell-extension-pop-shell",
         "pop-launcher",
         "pop-icon-theme",
-        
+
+        "adw-gtk3-theme",
         "fedorainfinity-backgrounds",
-        "yaru-theme",
+        "yaru-icon-theme",
         "terminus-fonts-console",
         
         "distrobox",
