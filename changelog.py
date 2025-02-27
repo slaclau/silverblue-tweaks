@@ -94,12 +94,6 @@ def calculate_layers(manifest, previous_manifest):
 
     for i in range(0, len(indexes)):
         idx = indexes[i]
-        if idx is not None:
-            new_idx = layers.index(layers[i])
-            print(f"Layer {idx} is unchanged (moved from {new_idx}) [{layers[idx]["Size"] / 1024 ** 2:.1f}")
-        else:
-            next_idx = indexes.index(next(idx for idx in indexes[i+1:] if idx is not None))
-            print(f"Layers {i} to {next_idx} are new")
 
 def get_changes(image):
     manifest = get_manifest(image)
