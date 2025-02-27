@@ -6,13 +6,15 @@
         "pop-launcher",
         "pop-icon-theme",
 
+        "gnome-shell-extension-dash-to-dock",
+
         "adw-gtk3-theme",
         "fedorainfinity-backgrounds",
         "yaru-icon-theme",
         "terminus-fonts-console",
-        
+
         "distrobox",
-        
+
         "tailscale"
       ]
     },

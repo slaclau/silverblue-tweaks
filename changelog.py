@@ -36,7 +36,6 @@ def get_manifest(image):
             time.sleep(RETRY_WAIT)
     return json.loads(output)
 
-
 def get_tags(manifest):
     tags = manifest["RepoTags"]
     tags = sorted([tag for tag in tags if re.match("[0-9]+", tag)])
@@ -88,6 +87,19 @@ def format_changes(changes, curr, prev, header=""):
         out += PATTERN_REMOVE.format(name=pkg, version=prev[pkg])
     return out
 
+def calculate_layers(manifest, previous_manifest):
+    layers = manifest["LayersData"]
+    previous_layers = previous_manifest["LayersData"]
+    indexes = [layers.index(layer) if layer in layers else None for layer in previous_layers]
+
+    for i in range(0, len(indexes)):
+        idx = indexes[i]
+        if idx is not None:
+            new_idx = layers.index(layers[i])
+            print(f"Layer {idx} is unchanged (moved from {new_idx}) [{layers[idx]["Size"] / 1024 ** 2:.1f}")
+        else:
+            next_idx = indexes.index(next(idx for idx in indexes[i+1:] if idx is not None))
+            print(f"Layers {i} to {next_idx} are new")
 
 def get_changes(image):
     manifest = get_manifest(image)
@@ -99,6 +111,8 @@ def get_changes(image):
     previous_versions = get_versions(previous_manifest)
 
     changes = calculate_changes(versions, previous_versions)
+    layers = calculate_layers(current_manifest, previous_manifest)
+
     header = f"""# {image} ({current})
 There have been the following changes since previous version ({previous}):"""
 
