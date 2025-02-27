@@ -78,7 +78,7 @@ def calculate_changes(
 
 
 def format_changes(changes, curr, prev, header=""):
-    out = header
+    out = header + "\n| | Name | Previous | New |\n| --- | --- | --- | --- |"
 
     for pkg in changes["added"]:
         out += PATTERN_ADD.format(name=pkg, version=curr[pkg])
@@ -103,7 +103,7 @@ def get_changes(image):
 There have been the following changes since previous version ({previous}):"""
 
     out = format_changes(changes, versions, previous_versions, header)
-    print(out)
+    return out
 
-
-get_changes("silverblue-tweaks")
+with open("changelog.md", "w") as f:
+    f.write(get_changes("silverblue-tweaks"))
