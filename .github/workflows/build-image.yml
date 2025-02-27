@@ -90,7 +90,7 @@ jobs:
           rechunk: 'ghcr.io/hhd-dev/rechunk:v1.0.1'
           ref: "localhost/${{ env.IMAGE_NAME }}:chunky"
           prev-ref: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
-          skip_compression: false
+          skip_compression: true
           labels: ${{ steps.metadata.outputs.labels }} # Rechunk strips out all the labels during build, this needs to be reapplied here with newline separator
 
       # This is necessary so that the podman socket can find the rechunked image on its storage
