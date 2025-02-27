@@ -99,7 +99,7 @@ def get_changes(image):
     previous_versions = get_versions(previous_manifest)
 
     changes = calculate_changes(versions, previous_versions)
-    header = f"""#{image} ({current})
+    header = f"""# {image} ({current})
 There have been the following changes since previous version ({previous}):"""
 
     out = format_changes(changes, versions, previous_versions, header)
