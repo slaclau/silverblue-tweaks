@@ -15,4 +15,3 @@ ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-41}"
 
 RUN --mount=type=bind,from=ctx,src=/,dst=/ctx \
     /ctx/build.sh
-    
