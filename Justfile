@@ -182,7 +182,7 @@ load-image $image=image_name:
     {{ PODMAN }} images
     rm -rf {{ image_name }}
 
-get-tags:
+get-tags $image=image_name:
     #!/usr/bin/env bash
     export VERSION="$(date +%Y%m%d)"
     echo "$VERSION"
