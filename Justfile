@@ -55,6 +55,7 @@ sudo-clean:
 
 build $target_image=image_name $tag=default_tag:
     #!/usr/bin/env bash
+    set -eoux pipefail
 
     # Get Version
     ver="${tag}-$(date +%Y%m%d)"
