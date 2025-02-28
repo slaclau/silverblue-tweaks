@@ -24,7 +24,7 @@ jobs:
           fetch-tags: true
       - name: Generate Changelog
         run: |
-          ./changelog.py >> changelog.md
+          ./changelog.py
           cat changelog.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Changelogs as Artifact
