@@ -75,10 +75,10 @@ jobs:
       - name: Build Image
         id: build_image
         run: |
-          sudo podman build \
+          echo "ref=$(sudo podman build \
             --file Containerfile \
             --format docker \
-            --tag raw-img
+            --tag raw-img)" >> $GITHUB_OUTPUT
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
@@ -98,7 +98,7 @@ jobs:
       - name: Load in podman and tag
         run: |
           IMAGE=$(podman pull ${{ steps.rechunk.outputs.ref }})
-          IMAGE=$(podman create localhost/raw-img)
+          IMAGE=${{ steps.build_image.outputs.ref }}
           sudo rm -rf ${{ steps.rechunk.outputs.output }}
           for tag in ${{ steps.metadata.outputs.tags }}; do
             podman tag $IMAGE ${{ env.IMAGE_NAME }}:$tag
