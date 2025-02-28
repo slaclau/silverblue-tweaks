@@ -184,5 +184,5 @@ load-image $image=image_name:
 
 get-tags $image=image_name:
     #!/usr/bin/env bash
-    export VERSION="$(date +%Y%m%d)"
+    VERSION=$({{ PODMAN }} inspect {{ image_name }} | jq -r '.[]["Config"]["Labels"]["org.opencontainers.image.version"]')
     echo "$VERSION"
