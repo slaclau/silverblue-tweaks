@@ -179,6 +179,7 @@ load-image $image=image_name:
     {{ PODMAN }} tag ${IMAGE} localhost/{{ image_name }}
     VERSION=$({{ PODMAN }} inspect $IMAGE | jq -r '.[]["Config"]["Labels"]["org.opencontainers.image.version"]')
     {{ PODMAN }} tag ${IMAGE} localhost/{{ image_name }}:${VERSION}
+    {{ PODMAN }} tag ${IMAGE} localhost/{{ image_name }}:latest
     {{ PODMAN }} images
     rm -rf {{ image_name }}
 
