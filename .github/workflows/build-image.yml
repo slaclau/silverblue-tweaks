@@ -61,10 +61,6 @@ jobs:
         shell: bash
         run: sudo just rechunk ${{ env.IMAGE_NAME }}
 
-      - name: Load and Tag Image
-        shell: bash
-        run: just load-image ${{ env.IMAGE_NAME }}
-
       - name: Get Tags
         shell: bash
         run: |

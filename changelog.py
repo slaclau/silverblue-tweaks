@@ -17,6 +17,25 @@ PATTERN_ADD = "\n| ✨ | {name} | | {version} |"
 PATTERN_CHANGE = "\n| 🔄 | {name} | {prev} | {new} |"
 PATTERN_REMOVE = "\n| ❌ | {name} | {version} | |"
 
+IMPORTANT_PACKAGES = {
+    "kernel": "Kernel",
+    "mesa-dri-drivers": "Mesa",
+    "podman": "Podman",
+    "gnome-control-center-filesystem": "GNOME",
+    "nvidia-driver": "Nvidia",
+    "plasma-desktop": "KDE",
+    "docker-ce": "Docker",
+    "incus": "Incus",
+}
+
+IGNORE_PACKAGES = [
+    "kernel",
+    "mesa-dri-drivers",
+    "podman",
+    "nvidia-driver",
+    "docker-ce",
+    "incus"
+]
 
 def get_manifest(image):
     output = None
@@ -67,6 +86,8 @@ def calculate_changes(
         packages = set(list(current_versions.keys()) + list(previous_versions.keys()))
 
     for package in packages:
+        if package in IGNORE_PACKAGES:
+            continue
         if package not in previous_versions:
             added.append(package)
         elif package not in current_versions:
@@ -77,7 +98,19 @@ def calculate_changes(
 
 
 def format_changes(changes, curr, prev, header=""):
-    out = header + "\n| | Name | Previous | New |\n| --- | --- | --- | --- |"
+    out = header
+
+    out = out + "\n## Major packages\n| Name | Version |\n| --- | --- |"
+
+    for pkg, ver in curr.items():
+        if pkg not in IMPORTANT_PACKAGES:
+            continue
+        if pkg not in prev or prev[pkg] == ver:
+            out = out + f"\n| {IMPORTANT_PACKAGES[pkg]} | {ver} |"
+        else:
+            out = out + f"\n| {IMPORTANT_PACKAGES[pkg]} | {prev[pkg]} ➡️ {ver}"
+    if changes["added"] or changes["changed"] or changes["removed"]:
+        out = out + "\n## Packages\n| | Name | Previous | New |\n| --- | --- | --- | --- |"
 
     for pkg in changes["added"]:
         out += PATTERN_ADD.format(name=pkg, version=curr[pkg])
