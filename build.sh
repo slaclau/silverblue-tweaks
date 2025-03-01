@@ -13,14 +13,14 @@ echo "::group::Install packages"
 /ctx/packages.sh
 echo "::endgroup::"
 
-echo "::group::Install packages"
+echo "::group::Customization"
 /ctx/customization.sh
 echo "::endgroup::"
 
-echo "::group::Install packages"
+echo "::group::Generate initramfs"
 /ctx/initramfs.sh
 echo "::endgroup::"
 
-echo "::group::Install packages"
+echo "::group::Clean up"
 /ctx/cleanup.sh
 echo "::endgroup::"
