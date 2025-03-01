@@ -1,4 +1,6 @@
 #!/bin/sh
+set ${SET_X:+-x} -eou pipefail
+
 dnf5 clean all
 
 rm -rf /tmp/*
