@@ -26,7 +26,7 @@ jobs:
       matrix:
         base_name:
           - silverblue-tweaks
-        image_flavor:
+        image_flavour:
           - main
     with:
       base_name: ${{ matrix.base_name }}
