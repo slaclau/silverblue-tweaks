@@ -3,8 +3,8 @@ name: Build Custom Image
 on:
   workflow_call:
     inputs:
-      image_flavor:
-        description: Flavor to build
+      image_flavour:
+        description: Flavour to build
         default: main
         type: string
       base_name:
@@ -43,13 +43,13 @@ jobs:
 
       - name: Get Image Name
         run: |
-          IMAGE_NAME="$(just image_name ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavor }})"
+          IMAGE_NAME="$(just image_name ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }})"
           echo "Image Name: ${IMAGE_NAME}"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: Get Default Tag
         run: |
-          DEFAULT_TAG="$(just generate-default-tag ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavor }})"
+          DEFAULT_TAG="$(just generate-default-tag ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }})"
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
