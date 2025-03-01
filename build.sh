@@ -13,3 +13,4 @@ set -ouex pipefail
 /ctx/packages.sh
 /ctx/customization.sh
 /ctx/initramfs.sh
+/ctx/cleanup.sh
