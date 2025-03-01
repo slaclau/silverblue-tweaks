@@ -50,7 +50,7 @@ jobs:
 
       - name: Get Default Tag
         run: |
-          DEFAULT_TAG="$(just generate-default-tag ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }})"
+          DEFAULT_TAG="$(just generate-default-tag ${{ inputs.stream_name }} 1)"
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
