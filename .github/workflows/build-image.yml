@@ -64,7 +64,7 @@ jobs:
       - name: Get Tags
         shell: bash
         run: |
-          TAGS="$(just generate-build-tags ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavor }} kernel_pin="" 1)"
+          TAGS="$(just generate-build-tags ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavor }} "" 1)"
           echo "Tags: ${TAGS}" >> $GITHUB_ENV
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
 
