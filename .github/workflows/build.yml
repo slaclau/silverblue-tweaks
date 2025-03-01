@@ -21,6 +21,14 @@ jobs:
     name: Build and push images
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        base_name:
+          - silverblue-tweaks
+        flavor:
+          - main
+
   create_release:
     needs: [build_push]
     name: Create Release
