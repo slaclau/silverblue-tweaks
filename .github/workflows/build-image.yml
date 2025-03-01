@@ -5,6 +5,7 @@ on:
     inputs:
       image_flavour:
         description: Flavour to build
+        required: true
         default: main
         type: string
       base_name:
