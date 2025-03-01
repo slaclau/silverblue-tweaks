@@ -28,7 +28,10 @@ jobs:
           - silverblue-tweaks
         flavor:
           - main
-
+    with:
+      base_name: ${{ matrix.base_name }}
+      flavor: ${{ matrix.flavor }}
+      stream: latest
   create_release:
     needs: [build_push]
     name: Create Release
