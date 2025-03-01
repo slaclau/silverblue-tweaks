@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           TAGS="$(just generate-build-tags ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }} "" 1)"
-          echo "Tags: ${TAGS}" >> $GITHUB_ENV
+          echo "Tags: ${TAGS}"
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
 
       - name: Build Image
