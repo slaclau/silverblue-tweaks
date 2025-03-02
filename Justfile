@@ -6,6 +6,7 @@ export SUDO_DISPLAY := if `if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-
 export SUDOIF := if `id -u` == "0" { "" } else if SUDO_DISPLAY == "true" { "sudo" } else { "sudo" }
 export PODMAN := if path_exists("/usr/bin/podman") == "true" { env("PODMAN", "/usr/bin/podman") } else if path_exists("/usr/bin/docker") == "true" { env("PODMAN", "docker") } else { env("PODMAN", "exit 1 ; ") }
 export SET_X := if `id -u` == "0" { "1" } else { env('SET_X', '') }
+export PULL_POLICY := if PODMAN =~ "docker" { "missing" } else { "newer" }
 
 images := '(
     [silverblue-tweaks]=silverblue-tweaks
@@ -220,34 +221,48 @@ rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         just build "${image}" "${tag}" "${flavor}"
     fi
 
-    if [[ "${UID}" -gt "0" && ! {{ PODMAN }} =~ docker ]]; then
+    # Load into Rootful Podman
+    ID=$(${SUDOIF} ${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
+    if [[ -z "$ID" && "${UID}" -gt "0" && ! {{ PODMAN }} =~ docker ]]; then
         COPYTMP="$(mktemp -p "${PWD}" -d -t podman_scp.XXXXXXXXXX)"
-        {{ SUDOIF }} TMPDIR="${COPYTMP}" {{ PODMAN }} image scp "${UID}"@localhost::localhost/{{ target_image }} root@localhost::localhost/{{ target_image }}
+        ${SUDOIF} TMPDIR=${COPYTMP} ${PODMAN} image scp ${UID}@localhost::localhost/"${image_name}":"${tag}" root@localhost::localhost/"${image_name}":"${tag}"
         rm -rf "${COPYTMP}"
     fi
 
+    # Prep Container
+    CREF=$(${SUDOIF} ${PODMAN} create localhost/"${image_name}":"${tag}" bash)
+    OLD_IMAGE=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Image')
+    OUT_NAME="${image_name}"
+    MOUNT=$(${SUDOIF} ${PODMAN} mount "${CREF}")
 
-    CREF=$({{ SUDOIF }} {{ PODMAN }} create localhost/{{ target_image }} bash)
-    MOUNT=$({{ SUDOIF }} {{ PODMAN }} mount "$CREF")
-
-    OUT_NAME="{{ target_image }}"
-    VERSION="$({{ SUDOIF }} {{ PODMAN }} inspect "$CREF" | jq -r '.[]["Config"]["Labels"]["org.opencontainers.image.version"]')"
-    LABELS=$( just generate_labels target_image $({{ SUDOIF }} {{ PODMAN }} inspect "$CREF" | jq -r '.[].["Config"]["Labels"]["ostree.linux"]'))
+    # Label Version
+    VERSION=$(${SUDOIF} ${PODMAN} inspect $CREF | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')
+    # Git SHA
+    SHA=""
+    if [[ -z "$(git status -s)" ]]; then
+        SHA=$(git rev-parse HEAD)
+    fi
+    LABELS=$(just generate_labels ${image_name} $({{ SUDOIF }} {{ PODMAN }} inspect "$CREF" | jq -r '.[].["Config"]["Labels"]["ostree.linux"]'))
 
     echo "::endgroup::"
+    # Rechunk Container
+    rechunker="ghcr.io/hhd-dev/rechunk:v1.1.3"
 
     echo "::group:: Rechunk Prune"
-    {{ SUDOIF }} {{ PODMAN }} run --rm \
+    # Run Rechunker's Prune
+    ${SUDOIF} ${PODMAN} run --rm \
+        --pull=${PULL_POLICY} \
         --security-opt label=disable \
         --volume "$MOUNT":/var/tree \
         --env TREE=/var/tree \
         --user 0:0 \
-        ghcr.io/hhd-dev/rechunk:latest \
+        "${rechunker}" \
         /sources/rechunk/1_prune.sh
     echo "::endgroup::"
 
-    echo "::group:: Create Tree"
-    {{ SUDOIF }} {{ PODMAN }} run --rm \
+    echo "::group:: Create ostree tree"
+    # Run Rechunker's Create
+    ${SUDOIF} ${PODMAN} run --rm \
         --security-opt label=disable \
         --volume "$MOUNT":/var/tree \
         --volume "cache_ostree:/var/ostree" \
@@ -255,48 +270,59 @@ rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --env REPO=/var/ostree/repo \
         --env RESET_TIMESTAMP=1 \
         --user 0:0 \
-        ghcr.io/hhd-dev/rechunk:latest \
+        "${rechunker}" \
         /sources/rechunk/2_create.sh
-    {{ SUDOIF }} {{ PODMAN }} unmount "$CREF"
-    {{ SUDOIF }} {{ PODMAN }} rm "$CREF"
-    if [[ "${UID}" -gt "0" ]]; then
-        {{ SUDOIF }} {{ PODMAN }} rmi localhost/{{ target_image }}
-    fi
-    {{ PODMAN }} rmi localhost/{{ target_image }}
+
+    # Cleanup Temp Container Reference
+    ${SUDOIF} ${PODMAN} unmount "$CREF"
+    ${SUDOIF} ${PODMAN} rm "$CREF"
+    ${SUDOIF} ${PODMAN} rmi "$OLD_IMAGE"
     echo "::endgroup::"
 
-    echo "::group:: Rechunk"
-    {{ SUDOIF }} {{ PODMAN }} run --rm \
-        --pull=newer \
+    echo "::group:: Rechunk Chunk"
+    # Run Rechunker
+    ${SUDOIF} ${PODMAN} run --rm \
+        --pull=${PULL_POLICY} \
         --security-opt label=disable \
         --volume "$PWD:/workspace" \
         --volume "$PWD:/var/git" \
         --volume cache_ostree:/var/ostree \
         --env REPO=/var/ostree/repo \
-        --env PREV_REF=ghcr.io/{{ repo_organization }}/{{ target_image }} \
-        --env LABELS="$LABELS" \
+        --env PREV_REF=ghcr.io/ublue-os/"${image_name}":"${tag}" \
         --env OUT_NAME="$OUT_NAME" \
-        --env VERSION="$VERSION" \
+        --env LABELS="${LABELS}" \
+        --env "DESCRIPTION='An interpretation of the Ubuntu spirit built on Fedora technology'" \
+        --env "VERSION=${VERSION}" \
         --env VERSION_FN=/workspace/version.txt \
         --env OUT_REF="oci:$OUT_NAME" \
         --env GIT_DIR="/var/git" \
+        --env REVISION="$SHA" \
         --user 0:0 \
-        ghcr.io/hhd-dev/rechunk:latest \
+        "${rechunker}" \
         /sources/rechunk/3_chunk.sh
+
+    # Fix Permissions of OCI
+    ${SUDOIF} find ${OUT_NAME} -type d -exec chmod 0755 {} \; || true
+    ${SUDOIF} find ${OUT_NAME}* -type f -exec chmod 0644 {} \; || true
+
+    if [[ "${UID}" -gt "0" ]]; then
+        ${SUDOIF} chown "${UID}:${GROUPS}" -R "${PWD}"
+    elif [[ -n "${SUDO_UID:-}" ]]; then
+        chown "${SUDO_UID}":"${SUDO_GID}" -R "${PWD}"
+    fi
     echo "::endgroup::"
 
     echo "::group:: Cleanup"
-    {{ SUDOIF }} find {{ target_image }} -type d -exec chmod 0755 {} \; || true
-    {{ SUDOIF }} find {{ target_image }}* -type f -exec chmod 0644 {} \; || true
-    if [[ "${UID}" -gt "0" ]]; then
-        {{ SUDOIF }} chown -R "${UID}":"${GROUPS[0]}" "${PWD}"
-        just load-image {{ target_image }}
-    elif [[ "${UID}" == "0" && -n "${SUDO_USER:-}" ]]; then
-        {{ SUDOIF }} chown -R "${SUDO_UID}":"${SUDO_GID}" "/run/user/${SUDO_UID}/just"
-        {{ SUDOIF }} chown -R "${SUDO_UID}":"${SUDO_GID}" "${PWD}"
-    fi
+    # Remove cache_ostree
+    ${SUDOIF} ${PODMAN} volume rm cache_ostree
 
-    {{ SUDOIF }} {{ PODMAN }} volume rm cache_ostree
+    echo "::endgroup::"
+
+    # Pipeline Checks
+    if [[ {{ pipeline }} == "1" && -n "${SUDO_USER:-}" ]]; then
+        sudo -u "${SUDO_USER}" just load-rechunk "${image}" "${tag}" "${flavor}"
+        sudo -u "${SUDO_USER}" just secureboot "${image}" "${tag}" "${flavor}"
+    fi
     echo "::endgroup::"
 
 # Load Image into Podman and Tag
