@@ -298,7 +298,12 @@ rechunk $target_image=image_name:
 load-image $image $tag $flavor:
     #!/usr/bin/env bash
     set ${SET_X:+-x} -eou pipefail
-    IMAGE=$({{ PODMAN }} pull oci:${PWD}/{{ image_name }}:{{ tag }})
+    image_name=$(just image_name {{ image }} {{ tag }} {{ flavor }})
+    IMAGE=$({{ PODMAN }} pull oci:${PWD}/{{ image_name }})
+    ${PODMAN} tag ${IMAGE} localhost/"${image_name}":{{ tag }}
+
+    rm -rf ${image_name}*
+    rm -f previous.manifest.json
 
 # Verify Container with Cosign
 [group('Utility')]
