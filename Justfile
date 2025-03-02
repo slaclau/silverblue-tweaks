@@ -198,7 +198,7 @@ build $image=image_name $tag="latest" $flavor="main" ghcr="0" pipeline="0" $kern
     echo "::endgroup::"
 
 [group('Image')]
-rechunk $target_image=image_name:
+rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/env bash
     set ${SET_X:+-x} -eou pipefail
     set -eoux pipefail
@@ -208,10 +208,16 @@ rechunk $target_image=image_name:
         exit 0
     fi
 
-    ID=$({{ PODMAN }} images --filter reference=localhost/{{ target_image }} --format "'{{ '{{.ID}}' }}'")
+    # Validate
+    just validate "${image}" "${tag}" "${flavor}"
 
+    # Image Name
+    image_name=$(just image_name {{ image }} {{ tag }} {{ flavor }})
+
+    # Check if image is already built
+    ID=$(${PODMAN} images --filter reference=localhost/"${image_name}":"${tag}" --format "'{{ '{{.ID}}' }}'")
     if [[ -z "$ID" ]]; then
-        just build {{ target_image }}
+        just build "${image}" "${tag}" "${flavor}"
     fi
 
     if [[ "${UID}" -gt "0" && ! {{ PODMAN }} =~ docker ]]; then
