@@ -63,7 +63,7 @@ jobs:
 
       - name: Build Image
         shell: bash
-        run: sudo just build ${{ inputs.base_name }} {{ inputs.stream_name }} im{{ inputs.image_flavour }}
+        run: sudo just build ${{ inputs.base_name }} {{ inputs.stream_name }} {{ inputs.image_flavour }}
 
       - name: Rechunk Image
         shell: bash
