@@ -66,19 +66,19 @@ jobs:
 
       - name: Build Image
         shell: bash
-        run: sudo just build ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+        run: just build ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
 
       - name: Rechunk Image
         shell: bash
-        run: sudo just rechunk ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+        run: just rechunk ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
 
       - name: Load Image
         shell: bash
-        run: sudo just load-image ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+        run: just load-image ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
 
       - name: Tag Image
         shell: bash
-        run: sudo just tag-images ${{ env.IMAGE_NAME }} ${{ inputs.stream_name }} "${{ env.TAGS }}"
+        run: just tag-images ${{ env.IMAGE_NAME }} ${{ inputs.stream_name }} "${{ env.TAGS }}"
 
       - name: Lowercase Registry
         id: registry_case
