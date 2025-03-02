@@ -70,7 +70,7 @@ jobs:
 
       - name: Rechunk Image
         shell: bash
-        run: just rechunk ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+        run: sudo just rechunk ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
 
       - name: Load Image
         shell: bash
