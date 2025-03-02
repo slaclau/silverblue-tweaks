@@ -75,7 +75,7 @@ jobs:
 
       - name: Tag Image
         shell: bash
-        run: sudo just tag-images ${{ env.IMAGE_NAME }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }} "${{ env.TAGS }}"
+        run: sudo just tag-images ${{ env.IMAGE_NAME }} ${{ inputs.stream_name }} "${{ env.TAGS }}"
 
       - name: Lowercase Registry
         id: registry_case
