@@ -2,10 +2,6 @@ name: Create Release
 on:
   workflow_call:
     inputs:
-      run-id:
-        description: "The Run-ID for the workflow."
-        type: number
-        required: true
       image_name:
         description: "The name of the image to create a release for."
         type: string
