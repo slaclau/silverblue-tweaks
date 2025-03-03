@@ -7,6 +7,12 @@ on:
         description: "The Run-ID for the workflow."
         type: number
         required: true
+      image_name:
+        type: string
+        required: true
+      stream_name:
+        type: string
+        required: true
 
 permissions:
   contents: write
@@ -24,7 +30,7 @@ jobs:
           fetch-tags: true
       - name: Generate Changelog
         run: |
-          ./changelog.py
+          ./changelog.py ${{ inputs.image_name }} ${{ inputs.stream_name }}
           cat changelog.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Changelogs as Artifact

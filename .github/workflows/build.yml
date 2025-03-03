@@ -36,3 +36,6 @@ jobs:
     needs: [build_push]
     name: Create Release
     uses: ./.github/workflows/create-release.yml
+    with:
+      image_name: silverblue-tweaks
+      stream_name: latest

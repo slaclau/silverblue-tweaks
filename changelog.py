@@ -2,6 +2,7 @@
 import json
 import pprint
 import re
+import sys
 import subprocess
 import time
 
@@ -55,9 +56,9 @@ def get_manifest(image):
             time.sleep(RETRY_WAIT)
     return json.loads(output)
 
-def get_tags(manifest):
+def get_tags(manifest, stream):
     tags = manifest["RepoTags"]
-    tags = sorted([tag for tag in tags if re.match("[0-9]+", tag)])
+    tags = sorted([tag for tag in tags if re.match(f"{stream}-[0-9]+", tag)])
     return tags[-2], tags[-1]
 
 
@@ -128,9 +129,9 @@ def calculate_layers(manifest, previous_manifest):
     for i in range(0, len(indexes)):
         idx = indexes[i]
 
-def get_changes(image):
-    manifest = get_manifest(image)
-    previous, current = get_tags(manifest)
+def get_changes(image, stream):
+    manifest = get_manifest(f"{image}:{stream}")
+    previous, current = get_tags(manifest, stream)
     current_manifest = get_manifest(f"{image}:{current}")
     previous_manifest = get_manifest(f"{image}:{previous}")
 
@@ -146,5 +147,6 @@ There have been the following changes since previous version ({previous}):"""
     out = format_changes(changes, versions, previous_versions, header)
     return out
 
-with open("changelog.md", "w") as f:
-    f.write(get_changes("silverblue-tweaks"))
+if __name__ == "__main__":
+    with open("changelog.md", "w") as f:
+        f.write(get_changes(sys.argv[1], sys.argv[2]))
