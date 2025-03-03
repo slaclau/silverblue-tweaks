@@ -14,7 +14,8 @@
                             "keyPath": "/etc/pki/containers/ghcr.io-slaclau.pub",
                             "signedIdentity": {"type": "matchRepository"}
                         }
-                    ]
+                    ],
+                    "": [{"type":"insecureAcceptAnything"}]
                 },
             "docker-daemon":
                 {
