@@ -57,6 +57,18 @@ jobs:
           echo "Default Tag: ${DEFAULT_TAG}"
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
+      - name: Build Image
+        shell: bash
+        run: sudo just build ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+
+      - name: Rechunk Image
+        shell: bash
+        run: sudo just rechunk ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+
+      - name: Load Image
+        shell: bash
+        run: just load-image ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
+
       - name: Get Tags
         shell: bash
         run: |
@@ -71,18 +83,6 @@ jobs:
             "${{ github.event.number }}")"
           echo "Tags: ${TAGS}"
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
-
-      - name: Build Image
-        shell: bash
-        run: sudo just build ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
-
-      - name: Rechunk Image
-        shell: bash
-        run: sudo just rechunk ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
-
-      - name: Load Image
-        shell: bash
-        run: just load-image ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }}
 
       - name: Tag Image
         shell: bash
