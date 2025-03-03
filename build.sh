@@ -17,7 +17,9 @@ echo "::group::Install packages"
 /ctx/packages.sh
 echo "::endgroup::"
 
+echo "::group::Install other system files"
 /ctx/other_setup.sh
+echo "::endgroup::"
 
 echo "::group::Customization"
 /ctx/customization.sh
