@@ -1,7 +1,6 @@
 name: Create Release
 on:
   workflow_call:
-  workflow_dispatch:
     inputs:
       run-id:
         description: "The Run-ID for the workflow."
