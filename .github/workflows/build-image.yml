@@ -67,7 +67,7 @@ jobs:
             "${{ inputs.kernel_pin }}" \
             "1" \
             "$(podman inspect ${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }} | jq -r '.[].Config.Labels["org.opencontainers.image.version"]')" \
-            "${{ github.event_name }} \
+            "${{ github.event_name }}" \
             "${{ github.event.number }}")"
           echo "Tags: ${TAGS}"
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
