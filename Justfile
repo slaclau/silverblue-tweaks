@@ -287,7 +287,7 @@ rechunk $image="silverblue-tweaks" $tag="latest" $flavor="main" ghcr="0" pipelin
         --volume "$PWD:/var/git" \
         --volume cache_ostree:/var/ostree \
         --env REPO=/var/ostree/repo \
-        --env PREV_REF=ghcr.io/"${repository_owner}"/"${image_name}":"${tag}" \
+        --env PREV_REF=ghcr.io/"${repo_organization}"/"${image_name}":"${tag}" \
         --env OUT_NAME="$OUT_NAME" \
         --env LABELS="${LABELS}" \
         --env "DESCRIPTION='An interpretation of the Ubuntu spirit built on Fedora technology'" \
