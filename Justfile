@@ -172,7 +172,7 @@ build $image=image_name $tag="latest" $flavor="main" ghcr="0" pipeline="0" $kern
     fi
 
     # Labels
-    LABELS=$(just generate_labels ${image_name} ${kernel_release} | jq '. |= + ["org.opencontainers.image.version='"$ver"'"] | .[]')
+    LABELS=$(just generate_labels ${image_name} ${kernel_release} | jq '. |= .+ ["org.opencontainers.image.version='"$ver"'"] | .[]')
 
     LABEL_ARGS=()
     IFS=$'\n'
