@@ -8,9 +8,11 @@ on:
         type: number
         required: true
       image_name:
+        description: "The name of the image to create a release for."
         type: string
         required: true
       stream_name:
+        description: "The stream to create a release for."
         type: string
         required: true
 
