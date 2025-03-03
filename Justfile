@@ -198,7 +198,7 @@ build $image=image_name $tag="latest" $flavor="main" ghcr="0" pipeline="0" $kern
     echo "::endgroup::"
 
 [group('Image')]
-rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
+rechunk $image="silverblue-tweaks" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
     #!/usr/bin/env bash
     set ${SET_X:+-x} -eou pipefail
     set -eoux pipefail
@@ -287,7 +287,7 @@ rechunk $image="bluefin" $tag="latest" $flavor="main" ghcr="0" pipeline="0":
         --volume "$PWD:/var/git" \
         --volume cache_ostree:/var/ostree \
         --env REPO=/var/ostree/repo \
-        --env PREV_REF=ghcr.io/ublue-os/"${image_name}":"${tag}" \
+        --env PREV_REF=ghcr.io/"${repository_owner}"/"${image_name}":"${tag}" \
         --env OUT_NAME="$OUT_NAME" \
         --env LABELS="${LABELS}" \
         --env "DESCRIPTION='An interpretation of the Ubuntu spirit built on Fedora technology'" \
