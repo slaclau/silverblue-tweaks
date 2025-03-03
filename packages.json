@@ -15,6 +15,7 @@
 
         "distrobox",
         "just",
+        "fastfetch",
 
         "tailscale"
       ]
