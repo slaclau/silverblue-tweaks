@@ -71,6 +71,12 @@ jobs:
     needs: [build_push]
     name: Create Release
     uses: ./.github/workflows/create-release.yml
+    strategy:
+      matrix:
+        stream_name:
+          - latest
+          - stable
+          - gts
     with:
       image_name: silverblue-tweaks
-      stream_name: latest
+      stream_name: ${{ matrix.stream_name }}
