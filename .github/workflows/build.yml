@@ -61,7 +61,7 @@ jobs:
           - latest
           - stable
           - gts
-        include: fromJSON(${{ needs.prep.outputs.STREAMS }})
+        include: ${{ fromJSON(needs.prep.outputs.STREAMS) }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
