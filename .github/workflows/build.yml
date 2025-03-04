@@ -67,7 +67,7 @@ jobs:
       stream_name: ${{ matrix.stream_name }}
       push: ${{ matrix.push }}
   create_release:
-    needs: [build_push]
+    needs: [build_push, prep]
     name: Create Release
     uses: ./.github/workflows/create-release.yml
     strategy:
