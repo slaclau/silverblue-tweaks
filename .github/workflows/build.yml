@@ -20,8 +20,10 @@ jobs:
   prep:
     runs-on: ubuntu-latest
     name: Prepare needed environment variables
+    outputs:
+      STREAMS: ${{ steps.streams.outputs.STREAMS }}
     steps:
-    - id: day
+    - id: streams
       run: |
         streams=(latest)
         echo "Day is $(date +%u) ($(date +%a))"
