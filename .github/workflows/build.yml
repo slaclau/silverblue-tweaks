@@ -19,9 +19,10 @@ permissions:
 jobs:
   prep:
     name: Prepare needed environment variables
-    run: |
-      echo "Day is $(date +%u) ($(date +%a))"
-      echo "DAY=$(date +%u)" >> $GITHUB_ENV
+    steps:
+    - run: |
+        echo "Day is $(date +%u) ($(date +%a))"
+        echo "DAY=$(date +%u)" >> $GITHUB_ENV
   build_push:
     needs: [prep]
     name: Build and push images
