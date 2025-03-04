@@ -22,7 +22,7 @@ on:
         type: string
       push:
         description: "Whether to push the built image"
-        type: bool
+        type: boolean
         required: true
 
 env:
