@@ -17,7 +17,13 @@ permissions:
   packages: write
   id-token: write
 jobs:
+  prep:
+    name: Prepare needed environment variables
+    run: |
+      echo "Day is $(date +%u) ($(date +%a))"
+      echo "DAY=$(date +%u)" >> $GITHUB_ENV
   build_push:
+    needs: [prep]
     name: Build and push images
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
@@ -32,7 +38,7 @@ jobs:
           - latest
         include:
           - stream_name: ${{ github.event_name == 'schedule' && 'stable' }}
-          - stream_name: ${{ github.event_name == 'schedule' && $(date +%a) == Sun && 'gts' }}
+          - stream_name: ${{ github.event_name == 'schedule' && env.DAY == 7 && 'gts' }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
