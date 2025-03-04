@@ -18,6 +18,7 @@ permissions:
   id-token: write
 jobs:
   prep:
+    runs_on: ubuntu-latest
     name: Prepare needed environment variables
     steps:
     - run: |
@@ -39,7 +40,7 @@ jobs:
           - latest
         include:
           - stream_name: ${{ github.event_name == 'schedule' && 'stable' }}
-          - stream_name: ${{ github.event_name == 'schedule' && env.DAY == 7 && 'gts' }}
+          - stream_name: ${{ github.event_name == 'schedule' && $DAY == 7 && 'gts' }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
