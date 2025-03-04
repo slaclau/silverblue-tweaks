@@ -68,7 +68,6 @@ jobs:
       push: ${{ matrix.push }}
   create_release:
     needs: [build_push, prep]
-    if: ${{ matrix.push }}
     name: Create Release
     uses: ./.github/workflows/create-release.yml
     strategy:
@@ -82,3 +81,4 @@ jobs:
       image_name: silverblue-tweaks
       stream_name: ${{ matrix.stream_name }}
       release: ${{ matrix.release }}
+      push: ${{ matrix.push }}
