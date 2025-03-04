@@ -28,10 +28,15 @@ jobs:
           - silverblue-tweaks
         image_flavour:
           - main
+        stream_name:
+          - latest
+        include:
+          - stream_name: ${{ github.event_name == 'schedule' && 'stable' }}
+          - stream_name: ${{ github.event_name == 'schedule' && $(date +%a) == Sun && 'gts' }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
-      stream_name: latest
+      stream_name: ${{ matrix.stream_name }}
   create_release:
     needs: [build_push]
     name: Create Release

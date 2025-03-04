@@ -128,11 +128,26 @@ build $image=image_name $tag="latest" $flavor="main" ghcr="0" pipeline="0" $kern
     fedora_version=$(just fedora_version '{{ image }}' '{{ tag }}' '{{ flavor }}' '{{ kernel_pin }}')
 
     # Verify Base Image with cosign
-    just verify-container "${base_image_name}:${fedora_version}" "quay.io/fedora-ostree-desktops"  "https://gitlab.com/fedora/ostree/ci-test/-/raw/main/quay.io-fedora-ostree-desktops.pub?ref_type=heads"
+    if [[ ${fedora_version} -lt 41 ]] && [[ ${base_image_name} == silverblue ]]; then
+        echo "This base is not signed"
+    else
+        just verify-container "${base_image_name}:${fedora_version}" "quay.io/fedora-ostree-desktops"  "https://gitlab.com/fedora/ostree/ci-test/-/raw/main/quay.io-fedora-ostree-desktops.pub?ref_type=heads"
+    fi
+
+    # AKMODS Flavor and Kernel Version
+    if [[ "${flavor}" =~ hwe ]]; then
+        akmods_flavor="bazzite"
+    elif [[ "${tag}" =~ gts|stable ]]; then
+        akmods_flavor="coreos-stable"
+    elif [[ "${tag}" =~ beta ]]; then
+        akmods_flavor="coreos-testing"
+    else
+        akmods_flavor="main"
+    fi
 
     # Kernel Release/Pin
     if [[ -z "${kernel_pin:-}" ]]; then
-        kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:main-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
+        kernel_release=$(skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/akmods:"${akmods_flavor}"-"${fedora_version}" | jq -r '.Labels["ostree.linux"]')
     else
         kernel_release="${kernel_pin}"
     fi

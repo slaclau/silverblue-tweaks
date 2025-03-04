@@ -1,7 +1,9 @@
 #!/bin/sh
 set ${SET_X:+-x} -eou pipefail
 
-dnf5 clean all
+if [[ $FEDORA_MAJOR_VERSION -gt 40 ]]; then
+  dnf5 clean all
+fi
 
 rm -rf /tmp/*
 rm -rf /var/*

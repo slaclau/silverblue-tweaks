@@ -3,7 +3,6 @@
     "include": {
       "all": [
         "gnome-shell-extension-pop-shell",
-        "pop-launcher",
         "pop-icon-theme",
 
         "gnome-shell-extension-dash-to-dock",
@@ -24,6 +23,13 @@
       "all": [
         "firefox",
         "firefox-langpacks"
+      ]
+    }
+  },
+  "41": {
+    "include": {
+      "all": [
+        "pop-launcher"
       ]
     }
   }
