@@ -26,20 +26,16 @@ jobs:
     outputs:
       STREAMS: ${{ steps.streams.outputs.STREAMS }}
     steps:
+    - id: date
+      run: echo "::set-output name=DAY::$(date +%u)"
     - id: streams
       run: |
         STREAMS=('{"stream_name": "latest", "push": true, "release": false}')
-        echo "Day is $(date +%u) ($(date +%a))"
+        echo "Day is $({{ steps.date.outputs.DAY }} ($(date +%a))"
         echo "Triggered by ${{ github.event_name }}"
         if [[ ${{ github.event_name }} == schedule ]]; then
-          echo "Push stable"
-          STREAMS+=('{"stream_name": "stable", "push": true, "release": ${{ $(date +%u) == 7 }}}')
-          if [[ $(date +%u) == 7 ]]; then
-            echo "Adding gts to streams"
-            STREAMS+=('{"stream_name": "gts", "push": true, "release": true}')
-          else
-            STREAMS+=('{"stream_name": "gts", "push": false, "release": false}')
-          fi
+          STREAMS+=('{"stream_name": "stable", "push": true, "release": ${{ steps.date.outputs.DAY == 7 }}}')
+          STREAMS+=('{"stream_name": "gts", "push": true, "release": true}')
         else
           STREAMS+=('{"stream_name": "stable", "push": false, "release": false}')
           STREAMS+=('{"stream_name": "gts", "push": false, "release": false}')
