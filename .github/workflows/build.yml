@@ -41,7 +41,7 @@ jobs:
           - latest
         include:
           - stream_name: ${{ github.event_name == 'schedule' && 'stable' }}
-          - stream_name: ${{ github.event_name == 'schedule' && fromJSON(jobs.prep.steps.day.DAY) == 7 && 'gts' }}
+          - stream_name: ${{ github.event_name == 'schedule' && fromJSON(needs.prep.steps.day.DAY) == 7 && 'gts' }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
