@@ -101,7 +101,7 @@ jobs:
 #          just secureboot ${{ env.IMAGE_NAME }}
 
       - name: Push to GHCR
-        if: ${{ inputs.push == true }}
+        if: ${{ inputs.push }}
         id: push
         env:
           REGISTRY_USER: ${{ github.actor }}
@@ -116,6 +116,7 @@ jobs:
           extra-args: --disable-content-trust
 
       - name: Login to GitHub Container Registry
+        if: ${{ inputs.push }}
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
         with:
           registry: ghcr.io
@@ -123,9 +124,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Cosign
+        if: ${{ inputs.push }}
         uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
 
       - name: Sign container image
+        if: ${{ inputs.push }}
         run: |
           IMAGE_FULL="${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}"
           for tag in ${{ env.TAGS }}; do
