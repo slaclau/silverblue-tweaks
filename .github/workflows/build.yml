@@ -27,7 +27,7 @@ jobs:
       STREAMS: ${{ steps.streams.outputs.STREAMS }}
     steps:
     - id: date
-      run: echo "::set-output name=DAY::$(date +%u)"
+      run: echo "DAY=$(date +%u)" >> $GITHUB_OUTPUT
     - id: streams
       run: |
         STREAMS=('{"stream_name": "latest", "push": true, "release": false}')
