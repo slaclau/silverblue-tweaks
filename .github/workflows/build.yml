@@ -76,6 +76,8 @@ jobs:
           - latest
           - stable
           - gts
+        include: ${{ fromJSON(needs.prep.outputs.STREAMS) }}
     with:
       image_name: silverblue-tweaks
       stream_name: ${{ matrix.stream_name }}
+      release: ${{ matrix.release }}
