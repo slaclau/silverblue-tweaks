@@ -10,6 +10,10 @@ on:
         description: "The stream to create a release for."
         type: string
         required: true
+      release:
+        description: "Whether to create a release"
+        type: boolean
+        required: true
 
 permissions:
   contents: write
@@ -26,9 +30,12 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
       - name: Generate Changelog
+        id: changelog
         run: |
           ./changelog.py ${{ inputs.image_name }} ${{ inputs.stream_name }}
           cat changelog.md >> $GITHUB_STEP_SUMMARY
+          source changelog.env
+          echo "TAG=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Upload Changelogs as Artifact
         uses: actions/upload-artifact@v4
@@ -42,4 +49,8 @@ jobs:
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
-        if: false
+        if: ${{ inputs.release }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.TAG }}
+          body_path: ./changelog.md
+          make_latest: ${{ matrix.stream_name == 'stable' }}

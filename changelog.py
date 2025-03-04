@@ -145,8 +145,11 @@ def get_changes(image, stream):
 There have been the following changes since previous version ({previous}):"""
 
     out = format_changes(changes, versions, previous_versions, header)
-    return out
+    return out, current
 
 if __name__ == "__main__":
+    changes, tag = get_changes(sys.argv[1], sys.argv[2])
     with open("changelog.md", "w") as f:
-        f.write(get_changes(sys.argv[1], sys.argv[2]))
+        f.write(changes)
+    with open("changelog.env", "w") as f:
+        f.write(f"TAG={tag}")
