@@ -28,21 +28,21 @@ jobs:
     steps:
     - id: streams
       run: |
-        STREAMS=('{"stream_name": "latest", "push": true}')
+        STREAMS=('{"stream_name": "latest", "push": true, "release": false}')
         echo "Day is $(date +%u) ($(date +%a))"
         echo "Triggered by ${{ github.event_name }}"
         if [[ ${{ github.event_name }} == schedule ]]; then
           echo "Push stable"
-          STREAMS+=('{"stream_name": "stable", "push": true}')
+          STREAMS+=('{"stream_name": "stable", "push": true, "release": ${{ $(date +%u) == 7 }}}')
           if [[ $(date +%u) == 7 ]]; then
             echo "Adding gts to streams"
-            STREAMS+=('{"stream_name": "gts", "push": true}')
+            STREAMS+=('{"stream_name": "gts", "push": true, "release": true}')
           else
-            STREAMS+=('{"stream_name": "gts", "push": false}')
+            STREAMS+=('{"stream_name": "gts", "push": false, "release": false}')
           fi
         else
-          STREAMS+=('{"stream_name": "stable", "push": false}')
-          STREAMS+=('{"stream_name": "gts", "push": false}')
+          STREAMS+=('{"stream_name": "stable", "push": false, "release": false}')
+          STREAMS+=('{"stream_name": "gts", "push": false, "release": false}')
         fi
         STREAMS=$(jq -nc '$ARGS.positional' --jsonargs "${STREAMS[@]}")
         echo "Streams: $STREAMS"
