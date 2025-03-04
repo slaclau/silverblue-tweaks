@@ -34,7 +34,7 @@ jobs:
             streams+=(gts)
           fi
         fi
-        echo STREAMS=$(jq -nc '$ARGS.positional' --args ${streams[@]}) >> $GITHUB_OUTPUT
+        echo "STREAMS=$(jq -nc '$ARGS.positional' --args ${streams[@]})" >> "$GITHUB_OUTPUT"
   build_push:
     needs: [prep]
     name: Build and push images
