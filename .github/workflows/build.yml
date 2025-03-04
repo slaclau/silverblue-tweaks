@@ -24,7 +24,7 @@ jobs:
     - id: day
       run: |
         echo "Day is $(date +%u) ($(date +%a))"
-        echo ${{ github.event_name && 'schedule' }}
+        echo ${{ github.event_name == 'schedule' && 'schedule' }}
   build_push:
     needs: [prep]
     name: Build and push images
