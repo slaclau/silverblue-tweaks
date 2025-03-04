@@ -68,6 +68,7 @@ jobs:
       push: ${{ matrix.push }}
   create_release:
     needs: [build_push, prep]
+    if: ${{ matrix.push }}
     name: Create Release
     uses: ./.github/workflows/create-release.yml
     strategy:
