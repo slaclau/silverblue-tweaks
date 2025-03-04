@@ -31,7 +31,7 @@ jobs:
     - id: streams
       run: |
         STREAMS=('{"stream_name": "latest", "push": true, "release": false}')
-        echo "Day is $({{ steps.date.outputs.DAY }} ($(date +%a))"
+        echo "Day is ${{ steps.date.outputs.DAY }} ($(date +%a))"
         echo "Triggered by ${{ github.event_name }}"
         if [[ ${{ github.event_name }} == schedule ]]; then
           STREAMS+=('{"stream_name": "stable", "push": true, "release": ${{ steps.date.outputs.DAY == 7 }}}')
