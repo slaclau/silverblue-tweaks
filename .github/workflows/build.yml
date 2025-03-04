@@ -47,7 +47,7 @@ jobs:
           - silverblue-tweaks
         image_flavour:
           - main
-        stream_name: fromJSON(needs.prep.outputs.STREAMS)
+        stream_name: ${{ fromJSON(needs.prep.outputs.STREAMS) }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
