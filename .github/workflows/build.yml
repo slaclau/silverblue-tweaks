@@ -18,7 +18,7 @@ permissions:
   id-token: write
 jobs:
   prep:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     name: Prepare needed environment variables
     steps:
     - run: |
