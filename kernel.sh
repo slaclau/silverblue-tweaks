@@ -13,5 +13,5 @@ else
     rpm --erase $pkg --nodeps
   done
   kernel_packages=$(echo $kernel_packages | sed "s/${installed}/${wanted}/g")
-  yum install -y $kernel_packages
+  rpm-ostree install -y $kernel_packages
 fi
