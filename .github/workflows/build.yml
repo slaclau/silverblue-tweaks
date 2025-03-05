@@ -35,7 +35,7 @@ jobs:
         echo "Triggered by ${{ github.event_name }}"
         if [[ ${{ github.event_name }} == schedule ]]; then
           STREAMS+=('{"stream_name": "stable", "push": true, "release": ${{ steps.date.outputs.DAY == 7 }}}')
-          STREAMS+=('{"stream_name": "gts", "push": true, "release": true}')
+          STREAMS+=('{"stream_name": "gts", "push": ${{ steps.date.outputs.DAY == 7 }}, "release": ${{ steps.date.outputs.DAY == 7 }}}')
         else
           STREAMS+=('{"stream_name": "stable", "push": false, "release": false}')
           STREAMS+=('{"stream_name": "gts", "push": false, "release": false}')
