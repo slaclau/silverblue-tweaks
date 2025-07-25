@@ -16,7 +16,9 @@
         "just",
         "fastfetch",
 
-        "tailscale"
+        "tailscale",
+
+        "waydroid"
       ]
     },
     "exclude": {
