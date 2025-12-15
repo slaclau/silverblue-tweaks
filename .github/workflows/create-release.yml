@@ -43,7 +43,7 @@ jobs:
           echo "TAG=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Upload Changelogs as Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: release-changelog
           path: ./changelog.md
