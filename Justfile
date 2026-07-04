@@ -390,7 +390,7 @@ verify-container container="" registry="ghcr.io/slaclau" key="":
 [private]
 fedora_version image=image_name tag=default_tag flavor="main" $kernel_pin="":
     #!/usr/bin/bash
-    set -eoux pipefail
+    set -eou pipefail
     just validate {{ image }} {{ tag }} {{ flavor }}
     if [[ ! -f /tmp/manifest.json ]]; then
         if [[ "{{ tag }}" =~ stable ]]; then
@@ -400,7 +400,7 @@ fedora_version image=image_name tag=default_tag flavor="main" $kernel_pin="":
             skopeo inspect --retry-times 3 docker://ghcr.io/ublue-os/base-main:"{{ tag }}" > /tmp/manifest.json
         fi
     fi
-    fedora_version=$(jq -r '.Labels["ostree.linux"]' < /tmp/manifest.json | grep -oP 'fc\K[0-9]+')
+    fedora_version=$(jq -r '.Labels["org.opencontainers.image.version"]' < /tmp/manifest.json | grep -oP 'fc\K[0-9]+')
     if [[ -n "${kernel_pin:-}" ]]; then
         fedora_version=$(echo "${kernel_pin}" | grep -oP 'fc\K[0-9]+')
     fi
