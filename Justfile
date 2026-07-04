@@ -13,6 +13,7 @@ images := '(
 )'
 flavors := '(
     [main]=main
+    [nvidia]=nvidia
 )'
 tags := '(
     [gts]=gts
