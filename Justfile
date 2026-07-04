@@ -159,7 +159,7 @@ build $image=image_name $tag="latest" $flavor="main" ghcr="0" pipeline="0" $kern
     else
         ver="${tag}-${fedora_version}.$(date +%Y%m%d)"
     fi
-    skopeo list-tags docker://ghcr.io/{{ repo_organization }}/${image_name} > /tmp/repotags.json
+    skopeo list-tags docker://ghcr.io/{{ repo_organization }}/${image_name} || echo "{}" > /tmp/repotags.json
     if [[ $(jq "any(.Tags[]; contains(\"$ver\"))" < /tmp/repotags.json) == "true" ]]; then
         POINT="1"
         while $(jq -e "any(.Tags[]; contains(\"$ver.$POINT\"))" < /tmp/repotags.json)
