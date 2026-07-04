@@ -56,6 +56,7 @@ jobs:
           - silverblue-tweaks
         image_flavour:
           - main
+          - nvidia
         stream_name:
           - latest
           - stable
