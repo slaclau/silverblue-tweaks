@@ -390,7 +390,7 @@ verify-container container="" registry="ghcr.io/slaclau" key="":
 [private]
 fedora_version image=image_name tag=default_tag flavor="main" $kernel_pin="":
     #!/usr/bin/bash
-    set -eou pipefail
+    set -eoux pipefail
     just validate {{ image }} {{ tag }} {{ flavor }}
     if [[ ! -f /tmp/manifest.json ]]; then
         if [[ "{{ tag }}" =~ stable ]]; then
