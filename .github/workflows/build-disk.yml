@@ -4,6 +4,26 @@ name: Build disk images
 on:
   workflow_dispatch:
     inputs:
+      
+  workflow_call:
+    inputs:
+      image_flavour:
+        description: Flavour to build
+        required: true
+        default: main
+        type: string
+      base_name:
+        description: The Base Image to build
+        required: true
+        default: silverblue-tweaks
+        type: string
+      stream_name:
+        description: "The Fedora Version: gts, stable, or latest"
+        required: true
+        type: string
+      kernel_pin:
+        description: "The full kernel version to pin"
+        type: string
       upload-to-s3:
         description: "Upload to S3"
         required: false
@@ -11,20 +31,9 @@ on:
         type: boolean
       platform:
         required: true
-        type: choice
-        options:
-          - amd64
-          - arm64
-  pull_request:
-    branches:
-      - main
-    paths:
-      - './disk.toml'
-      - './iso.toml'
-      - './.github/workflows/build-disk.yml'
+        type: string
 
 env:
-  IMAGE_NAME: ${{ github.event.repository.name }} # output of build.yml, keep in sync
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
   DEFAULT_TAG: "latest"
   BIB_IMAGE: "quay.io/centos-bootc/bootc-image-builder:latest"
@@ -77,6 +86,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
+      - name: Get Image Name
+        run: |
+          IMAGE_NAME="$(just image_name ${{ inputs.base_name }} ${{ inputs.stream_name }} ${{ inputs.image_flavour }})"
+          echo "Image Name: ${IMAGE_NAME}"
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+
       - name: Build disk images
         id: build
         uses: osbuild/bootc-image-builder-action@8661cd3832544ad68c12dcde8681b13ab0f56a8d # main
@@ -89,7 +104,7 @@ jobs:
           additional-args: --use-librepo=True
 
       - name: Upload disk images and Checksum to Job Artifacts
-        if: inputs.upload-to-s3 != true && github.event_name != 'pull_request'
+        if: inputs.upload-to-s3 != true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: ${{ steps.build.outputs.output-directory }}
@@ -99,7 +114,7 @@ jobs:
           overwrite: true
       
       - name: Upload to S3
-        if: inputs.upload-to-s3 == true && github.event_name != 'pull_request'
+        if: inputs.upload-to-s3 == true
         shell: bash
         env:
           RCLONE_CONFIG_S3_TYPE: s3
