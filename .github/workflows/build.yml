@@ -84,11 +84,14 @@ jobs:
           - latest
           - stable
           - gts
+        platform:
+          - amd64
         include: ${{ fromJSON(needs.prep.outputs.STREAMS) }}
     with:
       base_name: ${{ matrix.base_name }}
       image_flavour: ${{ matrix.image_flavour }}
       stream_name: ${{ matrix.stream_name }}
+      platform: ${{ matrix.platform }}
   create_release:
     needs: [build_push, build_image, prep]
     name: Create Release
