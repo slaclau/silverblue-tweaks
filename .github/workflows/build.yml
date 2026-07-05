@@ -67,33 +67,9 @@ jobs:
       image_flavour: ${{ matrix.image_flavour }}
       stream_name: ${{ matrix.stream_name }}
       push: ${{ matrix.push }}
-  build_image:
-    needs: [prep, build_push]
-    name: Build disk images
-    uses: ./.github/workflows/build-disk.yml
-    secrets: inherit
-    strategy:
-      fail-fast: false
-      matrix:
-        base_name:
-          - silverblue-tweaks
-        image_flavour:
-          - main
-          - nvidia
-        stream_name:
-          - latest
-          - stable
-          - gts
-        platform:
-          - amd64
-        include: ${{ fromJSON(needs.prep.outputs.STREAMS) }}
-    with:
-      base_name: ${{ matrix.base_name }}
-      image_flavour: ${{ matrix.image_flavour }}
-      stream_name: ${{ matrix.stream_name }}
-      platform: ${{ matrix.platform }}
+  
   create_release:
-    needs: [build_push, build_image, prep]
+    needs: [build_push, prep]
     name: Create Release
     uses: ./.github/workflows/create-release.yml
     strategy:
