@@ -4,7 +4,33 @@ name: Build disk images
 on:
   workflow_dispatch:
     inputs:
-      
+      image_flavour:
+        description: Flavour to build
+        required: true
+        default: main
+        type: string
+      base_name:
+        description: The Base Image to build
+        required: true
+        default: silverblue-tweaks
+        type: string
+      stream_name:
+        description: "The Fedora Version: gts, stable, or latest"
+        required: true
+        type: string
+      kernel_pin:
+        description: "The full kernel version to pin"
+        type: string
+      upload-to-s3:
+        description: "Upload to S3"
+        required: false
+        default: false
+        type: boolean
+      platform:
+        required: true
+        type: string
+
+
   workflow_call:
     inputs:
       image_flavour:
@@ -85,6 +111,11 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Install Just
+        shell: bash
+        run: bash .github/workflows/shared/install-just.sh
+
 
       - name: Get Image Name
         run: |
