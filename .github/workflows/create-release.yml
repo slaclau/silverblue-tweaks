@@ -53,7 +53,7 @@ jobs:
           overwrite: true
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: ${{ inputs.release }}
         with:
           tag_name: ${{ steps.changelog.outputs.TAG }}
